@@ -32,9 +32,11 @@
   ],
   "rules": {
     "camelcase": "off",
+    "no-console": "off",
     "import/no-duplicates": "off",
     "react/jsx-props-no-spreading": "off",
-    "prettier/prettier": "error",
+    "react/no-unused-prop-types": "warn",
+    "prettier/prettier": "warn",
     "react/react-in-jsx-scope": "off",
     "react/prop-types": "off",
     "jsx-a11y/anchor-is-valid": [
