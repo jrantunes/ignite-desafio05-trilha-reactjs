@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
 import { format, parseISO } from 'date-fns';
@@ -6,6 +7,7 @@ import Prismic from '@prismicio/client';
 import ptBR from 'date-fns/locale/pt-BR';
 
 import { FiCalendar, FiUser, FiClock } from 'react-icons/fi';
+import Head from 'next/head';
 import Header from '../../components/Header';
 
 import { getPrismicClient } from '../../services/prismic';
@@ -37,7 +39,29 @@ interface PostProps {
 }
 
 export default function Post({ post }: PostProps): JSX.Element {
+  const [readingTime, setReadingTime] = useState(0);
   const router = useRouter();
+
+  useEffect(() => {
+    function calculateReadingTime(): number {
+      const wordsCount = post.data.content.reduce((acc, data) => {
+        const wordsArr = RichText.asText(data.body).split(' ');
+
+        return acc + wordsArr.length;
+      }, 0);
+
+      const headingWordsCount = post.data.content.reduce(
+        (acc, data) => acc + data.heading.split(' ').length,
+        0
+      );
+
+      return Math.ceil((wordsCount + headingWordsCount) / 200);
+    }
+
+    const updatedReadingTime = calculateReadingTime();
+
+    setReadingTime(updatedReadingTime);
+  }, [post.data.content]);
 
   if (router.isFallback) {
     return <p>Carregando...</p>;
@@ -45,6 +69,10 @@ export default function Post({ post }: PostProps): JSX.Element {
 
   return (
     <>
+      <Head>
+        <title>spacetraveling | {post.data.title}</title>
+      </Head>
+
       <div
         style={{
           paddingLeft: '2rem',
@@ -76,7 +104,7 @@ export default function Post({ post }: PostProps): JSX.Element {
               {post.data.author}
             </span>
             <span>
-              <FiClock size={20} color="#BBBBBB" /> 4 min
+              <FiClock size={20} color="#BBBBBB" /> {readingTime} min
             </span>
           </div>
 
