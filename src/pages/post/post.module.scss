@@ -1,1 +1,81 @@
-// TODO
+.banner {
+  width: 100%;
+  height: 400px;
+  margin-bottom: 5rem;
+
+  display: flex;
+
+  img {
+    width: 100%;
+    object-fit: cover;
+  }
+}
+
+.post {
+  h1 {
+    font-size: 3rem;
+    color: #F8F8F8;
+
+    margin-bottom: 1.5rem;
+  }
+}
+
+.postInfo {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+
+  margin-bottom: 4rem;
+
+  span {
+    display: flex;
+    align-items: center;
+    color: #BBBBBB;
+    font-size: 1.0625rem;
+
+    svg {
+      margin-right: 0.5rem;
+    }
+  }
+}
+
+.postContent {
+  h2 {
+    font-size: 2.25rem;
+    color: #F8F8F8;
+
+    margin-bottom: 3rem;
+  }
+
+  div > div {
+    font-size: 1.125rem;
+    text-align: justify;
+
+    margin-bottom: 4rem;
+
+    p {
+      line-height: 1.5rem;
+
+      & + p {
+        margin-top: 1.5rem;
+      }
+    }
+
+
+    a {
+      color: #FF57B2;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    ul {
+      margin: 1rem 2rem;
+
+      li + li {
+        margin-top: 1rem;
+      }
+    }
+  }
+}
