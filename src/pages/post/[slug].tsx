@@ -10,6 +10,7 @@ import { FiCalendar, FiUser, FiClock } from 'react-icons/fi';
 import Link from 'next/link';
 import Head from 'next/head';
 import Header from '../../components/Header';
+import PreviewButton from '../../components/PreviewButton';
 
 import { getPrismicClient } from '../../services/prismic';
 
@@ -132,13 +133,7 @@ export default function Post({ post, preview }: PostProps): JSX.Element {
             ))}
           </div>
         </article>
-        {preview && (
-          <aside>
-            <Link href="/api/exit-preview">
-              <a>Sair do modo Preview</a>
-            </Link>
-          </aside>
-        )}
+        {preview && <PreviewButton />}
       </main>
     </>
   );

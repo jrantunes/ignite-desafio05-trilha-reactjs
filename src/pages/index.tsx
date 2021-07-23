@@ -8,6 +8,7 @@ import { FiCalendar, FiUser } from 'react-icons/fi';
 import Head from 'next/head';
 import Link from 'next/link';
 import Header from '../components/Header';
+import PreviewButton from '../components/PreviewButton';
 
 import { getPrismicClient } from '../services/prismic';
 
@@ -120,13 +121,7 @@ export default function Home({
         </section>
       </main>
 
-      {preview && (
-        <aside>
-          <Link href="/api/exit-preview">
-            <a>Sair do modo Preview</a>
-          </Link>
-        </aside>
-      )}
+      {preview && <PreviewButton />}
     </div>
   );
 }
