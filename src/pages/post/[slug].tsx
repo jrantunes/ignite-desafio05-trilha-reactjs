@@ -7,6 +7,7 @@ import Prismic from '@prismicio/client';
 import ptBR from 'date-fns/locale/pt-BR';
 
 import { FiCalendar, FiUser, FiClock } from 'react-icons/fi';
+import Link from 'next/link';
 import Head from 'next/head';
 import Header from '../../components/Header';
 
@@ -36,9 +37,10 @@ interface Post {
 
 interface PostProps {
   post: Post;
+  preview: boolean;
 }
 
-export default function Post({ post }: PostProps): JSX.Element {
+export default function Post({ post, preview }: PostProps): JSX.Element {
   const [readingTime, setReadingTime] = useState(0);
   const router = useRouter();
 
@@ -94,10 +96,20 @@ export default function Post({ post }: PostProps): JSX.Element {
           <h1>{post.data.title}</h1>
           <div className={styles.postInfo}>
             <span>
-              <FiCalendar size={20} color="#BBBBBB" />
-              {format(parseISO(post.first_publication_date), 'dd MMM yyyy', {
-                locale: ptBR,
-              })}
+              {post.first_publication_date ? (
+                <>
+                  <FiCalendar size={20} color="#BBBBBB" />
+                  {format(
+                    parseISO(post.first_publication_date),
+                    'dd MMM yyyy',
+                    {
+                      locale: ptBR,
+                    }
+                  )}
+                </>
+              ) : (
+                <p style={{ color: '#FF57B2' }}>Não publicado</p>
+              )}
             </span>
             <span>
               <FiUser size={20} color="#BBBBBB" />
@@ -120,6 +132,13 @@ export default function Post({ post }: PostProps): JSX.Element {
             ))}
           </div>
         </article>
+        {preview && (
+          <aside>
+            <Link href="/api/exit-preview">
+              <a>Sair do modo Preview</a>
+            </Link>
+          </aside>
+        )}
       </main>
     </>
   );
@@ -149,11 +168,17 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps<PostProps> = async ({
+  params,
+  preview = false,
+  previewData,
+}) => {
   const { slug } = params;
 
   const prismic = getPrismicClient();
-  const response = await prismic.getByUID('post', String(slug), {});
+  const response = await prismic.getByUID('post', String(slug), {
+    ref: previewData?.ref ?? null,
+  });
 
   const post: Post = {
     uid: response.uid,
@@ -168,7 +193,10 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   };
 
   return {
-    props: { post },
+    props: {
+      post,
+      preview,
+    },
     revalidate: 60 * 60 * 24, // 1 day
   };
 };
