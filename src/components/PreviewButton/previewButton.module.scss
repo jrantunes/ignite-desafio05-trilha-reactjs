@@ -2,15 +2,20 @@
   width: 100%;
   padding: 1.125rem 0;
   background: #F8F8F8;
-  color: #1A1D23;
   border-radius: 0.25rem;
+
+  color: #1A1D23;
+  font-size: 1.125rem;
+  font-weight: 600;
 
   display: flex;
   justify-content: center;
 
-  a {
-    font-size: 1.125rem;
-    font-weight: 600;
-    // font: 600 1.125rem Inter, sans-serif;
+  margin-top: 5rem;
+
+  transition: filter 0.2s;
+
+  &:hover {
+    filter: brightness(0.9);
   }
 }
