@@ -7,7 +7,6 @@ import Prismic from '@prismicio/client';
 import ptBR from 'date-fns/locale/pt-BR';
 
 import { FiCalendar, FiUser, FiClock } from 'react-icons/fi';
-import Link from 'next/link';
 import Head from 'next/head';
 import Header from '../../components/Header';
 import PreviewButton from '../../components/PreviewButton';
