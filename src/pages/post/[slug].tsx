@@ -8,6 +8,7 @@ import ptBR from 'date-fns/locale/pt-BR';
 
 import { FiCalendar, FiUser, FiClock } from 'react-icons/fi';
 import Head from 'next/head';
+import Link from 'next/link';
 import Header from '../../components/Header';
 import Comments from '../../components/Comments';
 import PreviewButton from '../../components/PreviewButton';
@@ -36,12 +37,23 @@ interface Post {
   };
 }
 
+type NeighborPost = {
+  title: string;
+  uid: string;
+};
 interface PostProps {
   post: Post;
   preview: boolean;
+  previousPost: NeighborPost | null;
+  nextPost: NeighborPost | null;
 }
 
-export default function Post({ post, preview }: PostProps): JSX.Element {
+export default function Post({
+  post,
+  preview,
+  previousPost,
+  nextPost,
+}: PostProps): JSX.Element {
   const [readingTime, setReadingTime] = useState(0);
   const router = useRouter();
 
@@ -134,6 +146,30 @@ export default function Post({ post, preview }: PostProps): JSX.Element {
           </div>
         </article>
 
+        <div className={styles.paginationContainer}>
+          <div>
+            {previousPost && (
+              <>
+                <p>{previousPost.title}</p>
+                <Link href={`/post/${previousPost.uid}`}>
+                  <a>Post anterior</a>
+                </Link>
+              </>
+            )}
+          </div>
+
+          <div>
+            {nextPost && (
+              <>
+                <p>{nextPost.title}</p>
+                <Link href={`/post/${nextPost.uid}`}>
+                  <a>Próximo post</a>
+                </Link>
+              </>
+            )}
+          </div>
+        </div>
+
         <Comments />
 
         {preview && <PreviewButton />}
@@ -166,6 +202,15 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
+function checkPostNeighborhood(post): NeighborPost | null {
+  if (!post.results[0]) return null;
+
+  return {
+    title: post.results[0].data.title,
+    uid: post.results[0].uid,
+  };
+}
+
 export const getStaticProps: GetStaticProps<PostProps> = async ({
   params,
   preview = false,
@@ -177,6 +222,24 @@ export const getStaticProps: GetStaticProps<PostProps> = async ({
   const response = await prismic.getByUID('post', String(slug), {
     ref: previewData?.ref ?? null,
   });
+
+  const previousPostResponse = await prismic.query(
+    [Prismic.predicates.at('document.type', 'post')],
+    {
+      pageSize: 1,
+      after: response.id,
+      orderings: '[document.first_publication_date desc]',
+    }
+  );
+
+  const nextPostResponse = await prismic.query(
+    [Prismic.predicates.at('document.type', 'post')],
+    {
+      pageSize: 1,
+      after: response.id,
+      orderings: '[document.first_publication_date]',
+    }
+  );
 
   const post: Post = {
     uid: response.uid,
@@ -190,10 +253,15 @@ export const getStaticProps: GetStaticProps<PostProps> = async ({
     },
   };
 
+  const previousPost = checkPostNeighborhood(previousPostResponse);
+  const nextPost = checkPostNeighborhood(nextPostResponse);
+
   return {
     props: {
       post,
       preview,
+      previousPost,
+      nextPost,
     },
     revalidate: 60 * 60 * 24, // 1 day
   };

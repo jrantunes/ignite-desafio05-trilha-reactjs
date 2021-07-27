@@ -12,6 +12,8 @@
 }
 
 .post {
+  border-bottom: 1px solid rgba(215, 215, 215, 0.1);
+
   h1 {
     font-size: 3rem;
     color: #F8F8F8;
@@ -76,6 +78,54 @@
       li + li {
         margin-top: 1rem;
       }
+    }
+  }
+}
+
+.paginationContainer {
+  display: flex;
+  justify-content: space-between;
+
+  margin: 3rem 0 5rem;
+
+  div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    p {
+      font-size: 1.125rem;
+      color: #F8F8F8;
+    }
+
+    a {
+      font-weight: 600;
+      color: #FF57B2;
+      position: relative;
+      width: fit-content;
+
+      // &:hover {
+      //   text-decoration: underline;
+      // }
+
+      &::after {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 1px;
+        background-color: #FF57B2;
+        left: 0;
+        bottom: -2px;
+        transition: width 0.2s;
+      }
+
+      &:hover::after {
+        width: 100%;
+      }
+    }
+
+    &:last-child {
+      align-items: flex-end;
     }
   }
 }
